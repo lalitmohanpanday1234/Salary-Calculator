@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Calculator - Calculate CTC, Gross & Net Salary</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator-container {
+            padding: 30px;
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid;
+        }
+        
+        .earnings-section {
+            border-left-color: #2ecc71;
+        }
+        
+        .deductions-section {
+            border-left-color: #e74c3c;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .label-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: border 0.3s;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .optional-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+        
+        .pf-input-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .pf-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pf-value-display {
+            font-size: 0.9rem;
+            color: #3498db;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        .days-section {
+            background-color: #e8f4fc;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .days-input-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .days-input-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .result-section {
+            background-color: #f0f8ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .result-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .result-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .result-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .gross-salary {
+            color: #3498db;
+        }
+        
+        .net-salary {
+            color: #27ae60;
+        }
+        
+        .deduction-total {
+            color: #e74c3c;
+        }
+        
+        .daily-rate {
+            color: #f39c12;
+        }
+        
+        .breakdown-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .breakdown-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #27ae60;
+        }
+        
+        .breakdown-item.deduction {
+            color: #e74c3c;
+        }
+        
+        .breakdown-item.gross {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .breakdown-item.daily {
+            color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .calculation-detail {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 3px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 180px;
+        }
+        
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .example-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .example-btn:hover {
+            background-color: #d68910;
+        }
+        
+        .share-section {
+            background-color: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .share-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #d35400;
+            font-size: 1.2rem;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 10px 20px;
+            background-color: #e8f4fc;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-btn:hover {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .currency {
+            font-size: 1.4rem;
+            vertical-align: top;
+        }
+        
+        .help-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .result-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            button {
+                min-width: 100%;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+            
+            .pf-input-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .formula-box {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .formula-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .info-box {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-left: 3px solid #f39c12;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 5px;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .fixed-label {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .commission-input-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .commission-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Salary Calculator</h1>
+            <p class="subtitle">Calculate CTC, Gross & Net Salary with Days Calculation</p>
+        </header>
+        
+        <div class="calculator-container">
+            <div class="days-section">
+                <h2 class="section-title">Days Calculation</h2>
+                
+                <div class="days-input-container">
+                    <div class="input-group">
+                        <label for="totalDays">
+                            <span class="label-icon">📅</span> Total Days in Month
+                        </label>
+                        <select id="totalDays">
+                            <option value="30">30 days</option>
+                            <option value="31">31 days</option>
+                            <option value="28">28 days (February)</option>
+                            <option value="29">29 days (Leap year)</option>
+                            <option value="custom">Custom days</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group" id="customDaysContainer" style="display:none;">
+                        <label for="customDays">
+                            <span class="label-icon">✏️</span> Custom Days
+                        </label>
+                        <input type="number" id="customDays" placeholder="Enter custom days" min="1" max="31">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="daysToBePaid">
+                            <span class="label-icon">✅</span> Days to be Paid For
+                        </label>
+                        <input type="number" id="daysToBePaid" placeholder="Enter days to be paid" value="30" min="0" max="31">
+                        <div class="help-text">Number of days you should receive payment for</div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>Note:</strong> All calculations will be prorated based on days to be paid for, except Fixed Commission.
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="section earnings-section">
+                    <h2 class="section-title">Earnings (All Optional)</h2>
+                    
+                    <div class="input-group">
+                        <label for="ctcSalary">
+                            <span class="label-icon">💰</span> CTC / Total Salary
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="ctcSalary" placeholder="Enter CTC / Total Salary" value="20600">
+                        <div class="help-text">Total salary including everything (CTC = Cost to Company)</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="basicSalary">
+                            <span class="label-icon">📄</span> Basic Salary
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="basicSalary" placeholder="Enter basic salary">
+                        <div class="help-text">Base component of salary</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="hra">
+                            <span class="label-icon">🏠</span> House Rent Allowance (HRA)
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="hra" placeholder="Enter HRA">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="conveyance">
+                            <span class="label-icon">🚗</span> Conveyance Allowance
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="conveyance" placeholder="Enter conveyance allowance">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="medical">
+                            <span class="label-icon">🏥</span> Medical Allowance
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="medical" placeholder="Enter medical allowance">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="otherAllowances">
+                            <span class="label-icon">📈</span> Other Allowances
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="otherAllowances" placeholder="Enter other allowances">
+                    </div>
+                </div>
+                
+                <div class="section deductions-section">
+                    <h2 class="section-title">Deductions (All Optional)</h2>
+                    
+                    <div class="input-group">
+                        <label for="pfMode">
+                            <span class="label-icon">📊</span> Provident Fund (PF)
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <div class="pf-input-container">
+                            <select id="pfMode">
+                                <option value="amount">Amount</option>
+                                <option value="percentage">Percentage</option>
+                            </select>
+                            <div class="pf-input-group">
+                                <input type="number" id="pfValue" placeholder="Enter PF" value="3600">
+                                <div class="pf-value-display" id="pfCalculatedValue">
+                                    Percentage: 17.48% of Basic Salary
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="tax">
+                            <span class="label-icon">📝</span> Tax (TDS/Income Tax)
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="tax" placeholder="Enter tax deduction">
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="commission-input-container">
+                            <label for="commission">
+                                <span class="label-icon">💼</span> Commission Deduction
+                                <span class="optional-label">(Optional)</span>
+                            </label>
+                            <input type="number" id="commission" placeholder="Enter commission deduction" value="2000">
+                            <div class="commission-options">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="fixedCommission">
+                                    <label for="fixedCommission" class="fixed-label">Fixed (Not prorated by days)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="otherDeductions">
+                            <span class="label-icon">📉</span> Other Deductions
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input type="number" id="otherDeductions" placeholder="Enter other deductions">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <div class="formula-title">Salary Formulas:</div>
+                <p><strong>Basic Salary + HRA + Allowances = GROSS SALARY</strong></p>
+                <p><strong>Gross Salary - (PF + Tax + Commission + Other Deductions) = NET SALARY</strong></p>
+                <p><strong>Gross Salary - (HRA + Allowances) = BASIC SALARY</strong></p>
+                <p><strong>CTC / Total Salary = All components added together</strong></p>
+                <p>Note: All fields are optional. Leave empty if not applicable.</p>
+                <p class="warning">Example: CTC = ₹20,600 includes PF (₹3,600) and Commission (₹2,000). Net Salary = ₹20,600 - ₹3,600 - ₹2,000 = ₹15,000</p>
+            </div>
+            
+            <div class="button-group">
+                <button class="calculate-btn" id="calculateBtn">Calculate Salary</button>
+                <button class="reset-btn" id="resetBtn">Reset All Fields</button>
+                <button class="example-btn" id="exampleBtn">Load Example</button>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-title">
+                    <span class="label-icon">📈</span> Salary Calculation Results (For Days to be Paid)
+                </div>
+                
+                <div class="result-summary">
+                    <div class="result-box">
+                        <div class="result-label">Daily Rate</div>
+                        <div class="result-value daily-rate" id="dailyRateDisplay">₹687</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Gross Salary</div>
+                        <div class="result-value gross-salary" id="grossSalaryDisplay">₹20,600</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Total Deductions</div>
+                        <div class="result-value deduction-total" id="totalDeductionDisplay">₹5,600</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Net Salary (Take Home)</div>
+                        <div class="result-value net-salary" id="netSalaryDisplay">₹15,000</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown-box">
+                    <div class="breakdown-title">
+                        Detailed Calculation Breakdown
+                        <button class="copy-btn" id="copyBreakdownBtn">Copy Breakdown</button>
+                    </div>
+                    
+                    <div id="breakdownContent">
+                        <div class="breakdown-item daily">
+                            <span>Daily Rate Calculation:</span>
+                            <span id="breakdownDailyRate">₹687</span>
+                        </div>
+                        <div class="calculation-detail" id="dailyRateCalculation">CTC (₹20,600) ÷ 30 days = ₹687 per day</div>
+                        
+                        <div class="breakdown-item">
+                            <span>Gross Salary for Days to be Paid:</span>
+                            <span id="breakdownGrossForDays">₹20,600</span>
+                        </div>
+                        <div class="calculation-detail" id="grossDaysCalculation">Daily Rate (₹687) × 30 days = ₹20,600</div>
+                        
+                        <div class="breakdown-item deduction">
+                            <span>PF Deduction for Days to be Paid:</span>
+                            <span id="breakdownPF">₹3,600</span>
+                        </div>
+                        <div class="calculation-detail" id="pfDaysCalculation">Full Month PF (₹3,600) ÷ 30 days × 30 days = ₹3,600</div>
+                        
+                        <div class="breakdown-item deduction">
+                            <span>Commission Deduction for Days to be Paid:</span>
+                            <span id="breakdownCommission">₹2,000</span>
+                        </div>
+                        <div class="calculation-detail" id="commissionDaysCalculation">Fixed Commission: ₹2,000 (Not prorated)</div>
+                        
+                        <div class="breakdown-item deduction">
+                            <span>Tax Deduction for Days to be Paid:</span>
+                            <span id="breakdownTax">₹0</span>
+                        </div>
+                        <div class="calculation-detail" id="taxDaysCalculation">Full Month Tax (₹0) ÷ 30 days × 30 days = ₹0</div>
+                        
+                        <div class="breakdown-item deduction">
+                            <span>Other Deductions for Days to be Paid:</span>
+                            <span id="breakdownOtherDeductions">₹0</span>
+                        </div>
+                        <div class="calculation-detail" id="otherDeductionsDaysCalculation">Full Month Other Deductions (₹0) ÷ 30 days × 30 days = ₹0</div>
+                        
+                        <div class="breakdown-item deduction">
+                            <span>Total Deductions for Days to be Paid:</span>
+                            <span id="breakdownTotalDeductions">₹5,600</span>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <span>Net Salary (Take Home) for Days to be Paid:</span>
+                            <span id="breakdownNet">₹15,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="share-section">
+                <div class="share-title">Share Salary Breakdown</div>
+                <p>You can copy the breakdown or share it via different platforms.</p>
+                
+                <div class="share-buttons">
+                    <button class="share-btn" id="shareTextBtn">
+                        <span>📋</span> Copy as Text
+                    </button>
+                    <button class="share-btn" id="shareWhatsAppBtn">
+                        <span>💬</span> Share on WhatsApp
+                    </button>
+                    <button class="share-btn" id="shareEmailBtn">
+                        <span>✉️</span> Share via Email
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>This salary calculator supports all salary components with flexible PF calculation and days-based proration.</p>
+            <p>© 2023 Salary Calculator - All Rights Reserved</p>
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification">Copied to clipboard!</div>
+
+    <script>
+        // DOM Elements
+        const totalDaysSelect = document.getElementById('totalDays');
+        const customDaysContainer = document.getElementById('customDaysContainer');
+        const customDaysInput = document.getElementById('customDays');
+        const daysToBePaidInput = document.getElementById('daysToBePaid');
+        
+        const ctcSalaryInput = document.getElementById('ctcSalary');
+        const basicSalaryInput = document.getElementById('basicSalary');
+        const hraInput = document.getElementById('hra');
+        const conveyanceInput = document.getElementById('conveyance');
+        const medicalInput = document.getElementById('medical');
+        const otherAllowancesInput = document.getElementById('otherAllowances');
+        
+        const pfModeSelect = document.getElementById('pfMode');
+        const pfValueInput = document.getElementById('pfValue');
+        const pfCalculatedValueDisplay = document.getElementById('pfCalculatedValue');
+        const taxInput = document.getElementById('tax');
+        const commissionInput = document.getElementById('commission');
+        const fixedCommissionCheckbox = document.getElementById('fixedCommission');
+        const otherDeductionsInput = document.getElementById('otherDeductions');
+        
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const copyBreakdownBtn = document.getElementById('copyBreakdownBtn');
+        
+        const shareTextBtn = document.getElementById('shareTextBtn');
+        const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+        const shareEmailBtn = document.getElementById('shareEmailBtn');
+        
+        const notification = document.getElementById('notification');
+        
+        // Display Elements
+        const dailyRateDisplay = document.getElementById('dailyRateDisplay');
+        const grossSalaryDisplay = document.getElementById('grossSalaryDisplay');
+        const totalDeductionDisplay = document.getElementById('totalDeductionDisplay');
+        const netSalaryDisplay = document.getElementById('netSalaryDisplay');
+        
+        // Breakdown Elements
+        const breakdownDailyRate = document.getElementById('breakdownDailyRate');
+        const breakdownGrossForDays = document.getElementById('breakdownGrossForDays');
+        const breakdownPF = document.getElementById('breakdownPF');
+        const breakdownTax = document.getElementById('breakdownTax');
+        const breakdownCommission = document.getElementById('breakdownCommission');
+        const breakdownOtherDeductions = document.getElementById('breakdownOtherDeductions');
+        const breakdownTotalDeductions = document.getElementById('breakdownTotalDeductions');
+        const breakdownNet = document.getElementById('breakdownNet');
+        
+        // Calculation Detail Elements
+        const dailyRateCalculation = document.getElementById('dailyRateCalculation');
+        const grossDaysCalculation = document.getElementById('grossDaysCalculation');
+        const pfDaysCalculation = document.getElementById('pfDaysCalculation');
+        const commissionDaysCalculation = document.getElementById('commissionDaysCalculation');
+        const taxDaysCalculation = document.getElementById('taxDaysCalculation');
+        const otherDeductionsDaysCalculation = document.getElementById('otherDeductionsDaysCalculation');
+        
+        // Variables to store calculated values
+        let fullMonthGross = 0;
+        let dailyRate = 0;
+        let fullMonthPF = 0;
+        let fullMonthCommission = 0;
+        let fullMonthTax = 0;
+        let fullMonthOtherDeductions = 0;
+        
+        // Get total days based on selection
+        function getTotalDays() {
+            if (totalDaysSelect.value === 'custom') {
+                return parseFloat(customDaysInput.value) || 30;
+            }
+            return parseFloat(totalDaysSelect.value) || 30;
+        }
+        
+        // Format number to Indian Rupees format
+        function formatRupees(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+        
+        // Calculate PF based on mode
+        function calculatePF() {
+            const pfMode = pfModeSelect.value;
+            const pfValue = parseFloat(pfValueInput.value) || 0;
+            
+            // Determine base for PF calculation
+            let pfBase = parseFloat(basicSalaryInput.value) || 0;
+            
+            // If basic salary is not provided, use CTC as base
+            if (pfBase === 0) {
+                pfBase = parseFloat(ctcSalaryInput.value) || 0;
+            }
+            
+            if (pfMode === 'amount') {
+                fullMonthPF = pfValue;
+                if (pfBase > 0) {
+                    const pfPercentage = (fullMonthPF / pfBase) * 100;
+                    pfCalculatedValueDisplay.textContent = `Percentage: ${pfPercentage.toFixed(2)}% of ${pfBase === parseFloat(basicSalaryInput.value) ? 'Basic Salary' : 'CTC'}`;
+                } else {
+                    pfCalculatedValueDisplay.textContent = 'Percentage: N/A (No base salary provided)';
+                }
+            } else if (pfMode === 'percentage') {
+                const pfPercentage = pfValue;
+                if (pfBase > 0) {
+                    fullMonthPF = (pfBase * pfPercentage) / 100;
+                    pfCalculatedValueDisplay.textContent = `Amount: ${formatRupees(fullMonthPF)} (${pfPercentage}% of ${pfBase === parseFloat(basicSalaryInput.value) ? 'Basic Salary' : 'CTC'})`;
+                } else {
+                    fullMonthPF = 0;
+                    pfCalculatedValueDisplay.textContent = 'Amount: ₹0 (No base salary provided)';
+                }
+            }
+            
+            return fullMonthPF;
+        }
+        
+        // Calculate salary
+        function calculateSalary() {
+            // Get days values
+            const totalDays = getTotalDays();
+            const daysToBePaid = parseFloat(daysToBePaidInput.value) || 0;
+            
+            // Validate days
+            if (daysToBePaid > totalDays) {
+                alert("Days to be paid for cannot exceed total days in month.");
+                daysToBePaidInput.value = totalDays;
+                return calculateSalary();
+            }
+            
+            // Get all input values (treat empty as 0)
+            const ctcSalary = parseFloat(ctcSalaryInput.value) || 0;
+            const basicSalary = parseFloat(basicSalaryInput.value) || 0;
+            const hra = parseFloat(hraInput.value) || 0;
+            const conveyance = parseFloat(conveyanceInput.value) || 0;
+            const medical = parseFloat(medicalInput.value) || 0;
+            const otherAllowances = parseFloat(otherAllowancesInput.value) || 0;
+            
+            // Calculate Gross Salary from components if CTC is not provided
+            if (ctcSalary > 0) {
+                // Use CTC as the starting point (as per your example)
+                fullMonthGross = ctcSalary;
+            } else {
+                // Calculate Gross Salary from components
+                fullMonthGross = basicSalary + hra + conveyance + medical + otherAllowances;
+            }
+            
+            // Calculate full month deductions
+            fullMonthPF = calculatePF(); // Calculate PF based on mode
+            fullMonthCommission = parseFloat(commissionInput.value) || 0;
+            fullMonthTax = parseFloat(taxInput.value) || 0;
+            fullMonthOtherDeductions = parseFloat(otherDeductionsInput.value) || 0;
+            
+            // Calculate daily rate
+            dailyRate = fullMonthGross / totalDays;
+            
+            // Calculate prorated amounts for days to be paid
+            const grossForDays = dailyRate * daysToBePaid;
+            
+            // PF is always prorated
+            const pfForDays = (fullMonthPF / totalDays) * daysToBePaid;
+            
+            // Commission can be fixed or prorated based on checkbox
+            let commissionForDays;
+            if (fixedCommissionCheckbox.checked) {
+                // Fixed commission - always deduct full amount
+                commissionForDays = fullMonthCommission;
+                commissionDaysCalculation.textContent = `Fixed Commission: ${formatRupees(fullMonthCommission)} (Not prorated)`;
+            } else {
+                // Prorated commission
+                commissionForDays = (fullMonthCommission / totalDays) * daysToBePaid;
+                commissionDaysCalculation.textContent = `Full Month Commission (${formatRupees(fullMonthCommission)}) ÷ ${totalDays} days × ${daysToBePaid} days = ${formatRupees(commissionForDays)}`;
+            }
+            
+            // Tax is always prorated
+            const taxForDays = (fullMonthTax / totalDays) * daysToBePaid;
+            
+            // Other deductions are always prorated
+            const otherDeductionsForDays = (fullMonthOtherDeductions / totalDays) * daysToBePaid;
+            
+            // Calculate total deductions and net salary for days to be paid
+            const totalDeductionsForDays = pfForDays + commissionForDays + taxForDays + otherDeductionsForDays;
+            const netSalaryForDays = grossForDays - totalDeductionsForDays;
+            
+            // Update main displays
+            dailyRateDisplay.textContent = formatRupees(Math.round(dailyRate));
+            grossSalaryDisplay.textContent = formatRupees(Math.round(grossForDays));
+            totalDeductionDisplay.textContent = formatRupees(Math.round(totalDeductionsForDays));
+            netSalaryDisplay.textContent = formatRupees(Math.round(netSalaryForDays));
+            
+            // Update breakdown with actual values used
+            breakdownDailyRate.textContent = formatRupees(Math.round(dailyRate));
+            breakdownGrossForDays.textContent = formatRupees(Math.round(grossForDays));
+            breakdownPF.textContent = formatRupees(Math.round(pfForDays));
+            breakdownCommission.textContent = formatRupees(Math.round(commissionForDays));
+            breakdownTax.textContent = formatRupees(Math.round(taxForDays));
+            breakdownOtherDeductions.textContent = formatRupees(Math.round(otherDeductionsForDays));
+            breakdownTotalDeductions.textContent = formatRupees(Math.round(totalDeductionsForDays));
+            breakdownNet.textContent = formatRupees(Math.round(netSalaryForDays));
+            
+            // Update calculation details
+            const baseAmount = ctcSalary > 0 ? 'CTC' : 'Gross Salary';
+            const baseValue = ctcSalary > 0 ? ctcSalary : fullMonthGross;
+            
+            dailyRateCalculation.textContent = `${baseAmount} (${formatRupees(Math.round(baseValue))}) ÷ ${totalDays} days = ${formatRupees(Math.round(dailyRate))} per day`;
+            grossDaysCalculation.textContent = `Daily Rate (${formatRupees(Math.round(dailyRate))}) × ${daysToBePaid} days = ${formatRupees(Math.round(grossForDays))}`;
+            
+            // PF calculation detail
+            pfDaysCalculation.textContent = `Full Month PF (${formatRupees(Math.round(fullMonthPF))}) ÷ ${totalDays} days × ${daysToBePaid} days = ${formatRupees(Math.round(pfForDays))}`;
+            
+            // Tax calculation detail
+            taxDaysCalculation.textContent = `Full Month Tax (${formatRupees(Math.round(fullMonthTax))}) ÷ ${totalDays} days × ${daysToBePaid} days = ${formatRupees(Math.round(taxForDays))}`;
+            
+            // Other deductions calculation detail
+            otherDeductionsDaysCalculation.textContent = `Full Month Other Deductions (${formatRupees(Math.round(fullMonthOtherDeductions))}) ÷ ${totalDays} days × ${daysToBePaid} days = ${formatRupees(Math.round(otherDeductionsForDays))}`;
+        }
+        
+        // Reset all fields
+        function resetForm() {
+            // Clear days inputs
+            totalDaysSelect.value = '30';
+            customDaysContainer.style.display = 'none';
+            customDaysInput.value = '';
+            daysToBePaidInput.value = '30';
+            
+            // Clear salary inputs
+            ctcSalaryInput.value = '';
+            basicSalaryInput.value = '';
+            hraInput.value = '';
+            conveyanceInput.value = '';
+            medicalInput.value = '';
+            otherAllowancesInput.value = '';
+            
+            // Clear deduction inputs
+            pfModeSelect.value = 'amount';
+            pfValueInput.value = '';
+            pfCalculatedValueDisplay.textContent = 'Percentage: 0%';
+            taxInput.value = '';
+            commissionInput.value = '';
+            fixedCommissionCheckbox.checked = false;
+            otherDeductionsInput.value = '';
+            
+            // Reset displays
+            dailyRateDisplay.textContent = '₹0';
+            grossSalaryDisplay.textContent = '₹0';
+            totalDeductionDisplay.textContent = '₹0';
+            netSalaryDisplay.textContent = '₹0';
+            
+            // Reset breakdown
+            breakdownDailyRate.textContent = '₹0';
+            breakdownGrossForDays.textContent = '₹0';
+            breakdownPF.textContent = '₹0';
+            breakdownTax.textContent = '₹0';
+            breakdownCommission.textContent = '₹0';
+            breakdownOtherDeductions.textContent = '₹0';
+            breakdownTotalDeductions.textContent = '₹0';
+            breakdownNet.textContent = '₹0';
+            
+            // Reset calculation details
+            dailyRateCalculation.textContent = 'CTC (₹0) ÷ 30 days = ₹0 per day';
+            grossDaysCalculation.textContent = 'Daily Rate (₹0) × 30 days = ₹0';
+            pfDaysCalculation.textContent = 'Full Month PF (₹0) ÷ 30 days × 30 days = ₹0';
+            commissionDaysCalculation.textContent = 'Fixed Commission: ₹0 (Not prorated)';
+            taxDaysCalculation.textContent = 'Full Month Tax (₹0) ÷ 30 days × 30 days = ₹0';
+            otherDeductionsDaysCalculation.textContent = 'Full Month Other Deductions (₹0) ÷ 30 days × 30 days = ₹0';
+        }
+        
+        // Load example values
+        function loadExample() {
+            // Days
+            totalDaysSelect.value = '30';
+            customDaysContainer.style.display = 'none';
+            daysToBePaidInput.value = '30';
+            
+            // Earnings
+            ctcSalaryInput.value = 20600;
+            basicSalaryInput.value = '';
+            hraInput.value = '';
+            conveyanceInput.value = '';
+            medicalInput.value = '';
+            otherAllowancesInput.value = '';
+            
+            // Deductions
+            pfModeSelect.value = 'amount';
+            pfValueInput.value = 3600;
+            taxInput.value = '';
+            commissionInput.value = 2000;
+            fixedCommissionCheckbox.checked = true; // Fixed by default in example
+            otherDeductionsInput.value = '';
+            
+            calculateSalary();
+        }
+        
+        // Copy breakdown to clipboard
+        function copyBreakdown() {
+            // Create text representation of breakdown
+            let breakdownText = "SALARY CALCULATION BREAKDOWN (DAYS BASED)\n";
+            breakdownText += "============================================\n\n";
+            
+            breakdownText += `Total Days in Month: ${getTotalDays()}\n`;
+            breakdownText += `Days to be Paid For: ${daysToBePaidInput.value}\n\n`;
+            
+            breakdownText += "EARNINGS:\n";
+            breakdownText += `CTC / Total Salary: ${formatRupees(parseFloat(ctcSalaryInput.value) || 0)}\n`;
+            breakdownText += `Daily Rate: ${dailyRateCalculation.textContent}\n`;
+            breakdownText += `Gross Salary for ${daysToBePaidInput.value} days: ${grossDaysCalculation.textContent}\n\n`;
+            
+            breakdownText += "DEDUCTIONS:\n";
+            breakdownText += `PF Deduction: ${pfDaysCalculation.textContent}\n`;
+            breakdownText += `Commission Deduction: ${commissionDaysCalculation.textContent}\n`;
+            breakdownText += `Tax Deduction: ${taxDaysCalculation.textContent}\n`;
+            breakdownText += `Other Deductions: ${otherDeductionsDaysCalculation.textContent}\n`;
+            breakdownText += `Total Deductions for ${daysToBePaidInput.value} days: ${breakdownTotalDeductions.textContent}\n\n`;
+            
+            breakdownText += `NET SALARY (TAKE HOME) for ${daysToBePaidInput.value} days: ${breakdownNet.textContent}\n\n`;
+            
+            breakdownText += "PF Details: " + pfCalculatedValueDisplay.textContent + "\n\n";
+            
+            breakdownText += "Generated using Salary Calculator";
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(breakdownText).then(() => {
+                showNotification("Salary breakdown copied to clipboard!");
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback method
+                const textArea = document.createElement('textarea');
+                textArea.value = breakdownText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification("Salary breakdown copied to clipboard!");
+            });
+        }
+        
+        // Share via WhatsApp
+        function shareViaWhatsApp() {
+            const text = `My Salary Calculation for ${daysToBePaidInput.value} days:\nCTC: ${formatRupees(parseFloat(ctcSalaryInput.value) || 0)}\nDaily Rate: ${dailyRateDisplay.textContent}\nGross: ${grossSalaryDisplay.textContent}\nDeductions: ${totalDeductionDisplay.textContent}\nNet: ${netSalaryDisplay.textContent}\n\nPF: ${pfCalculatedValueDisplay.textContent}\n\nCalculate yours: ${window.location.href}`;
+            const encodedText = encodeURIComponent(text);
+            window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+        }
+        
+        // Share via Email
+        function shareViaEmail() {
+            const subject = `My Salary Calculation for ${daysToBePaidInput.value} Days`;
+            const body = `My Salary Calculation for ${daysToBePaidInput.value} days:\n\nDAYS:\nTotal Days in Month: ${getTotalDays()}\nDays to be Paid For: ${daysToBePaidInput.value}\n\nEARNINGS:\nCTC / Total Salary: ${formatRupees(parseFloat(ctcSalaryInput.value) || 0)}\nDaily Rate: ${dailyRateCalculation.textContent}\nGross Salary for ${daysToBePaidInput.value} days: ${grossDaysCalculation.textContent}\n\nDEDUCTIONS:\nPF Deduction: ${pfDaysCalculation.textContent}\nCommission Deduction: ${commissionDaysCalculation.textContent}\nTax Deduction: ${taxDaysCalculation.textContent}\nOther Deductions: ${otherDeductionsDaysCalculation.textContent}\nTotal Deductions for ${daysToBePaidInput.value} days: ${breakdownTotalDeductions.textContent}\n\nNET SALARY (TAKE HOME) for ${daysToBePaidInput.value} days: ${breakdownNet.textContent}\n\nPF Details: ${pfCalculatedValueDisplay.textContent}\n\nGenerated using Salary Calculator: ${window.location.href}`;
+            
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Event Listeners
+        calculateBtn.addEventListener('click', calculateSalary);
+        resetBtn.addEventListener('click', resetForm);
+        exampleBtn.addEventListener('click', loadExample);
+        copyBreakdownBtn.addEventListener('click', copyBreakdown);
+        shareTextBtn.addEventListener('click', copyBreakdown);
+        shareWhatsAppBtn.addEventListener('click', shareViaWhatsApp);
+        shareEmailBtn.addEventListener('click', shareViaEmail);
+        
+        // Update PF calculation when PF mode or value changes
+        pfModeSelect.addEventListener('change', function() {
+            if (parseFloat(ctcSalaryInput.value) > 0 || parseFloat(basicSalaryInput.value) > 0) {
+                calculatePF();
+                calculateSalary();
+            }
+        });
+        
+        pfValueInput.addEventListener('input', function() {
+            if (parseFloat(ctcSalaryInput.value) > 0 || parseFloat(basicSalaryInput.value) > 0) {
+                calculatePF();
+                calculateSalary();
+            }
+        });
+        
+        // Fixed commission checkbox
+        fixedCommissionCheckbox.addEventListener('change', calculateSalary);
+        
+        // Show/hide custom days input
+        totalDaysSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDaysContainer.style.display = 'block';
+                customDaysInput.value = 30;
+            } else {
+                customDaysContainer.style.display = 'none';
+            }
+            if (parseFloat(ctcSalaryInput.value) > 0 || parseFloat(basicSalaryInput.value) > 0 || 
+                parseFloat(hraInput.value) > 0 || parseFloat(conveyanceInput.value) > 0 || 
+                parseFloat(medicalInput.value) > 0 || parseFloat(otherAllowancesInput.value) > 0) {
+                calculateSalary();
+            }
+        });
+        
+        // Auto-calculate when days inputs change
+        customDaysInput.addEventListener('input', function() {
+            if (parseFloat(ctcSalaryInput.value) > 0 || parseFloat(basicSalaryInput.value) > 0 || 
+                parseFloat(hraInput.value) > 0 || parseFloat(conveyanceInput.value) > 0 || 
+                parseFloat(medicalInput.value) > 0 || parseFloat(otherAllowancesInput.value) > 0) {
+                calculateSalary();
+            }
+        });
+        
+        daysToBePaidInput.addEventListener('input', function() {
+            if (parseFloat(ctcSalaryInput.value) > 0 || parseFloat(basicSalaryInput.value) > 0 || 
+                parseFloat(hraInput.value) > 0 || parseFloat(conveyanceInput.value) > 0 || 
+                parseFloat(medicalInput.value) > 0 || parseFloat(otherAllowancesInput.value) > 0) {
+                calculateSalary();
+            }
+        });
+        
+        // Initialize with example data
+        document.addEventListener('DOMContentLoaded', loadExample);
+    </script>
+</body>
+</html>
